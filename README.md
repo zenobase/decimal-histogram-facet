@@ -1,7 +1,7 @@
 Decimal Histogram Facet Plugin for elasticsearch
 ================================================
 
-This plugin provides a facet for [elasticsearch](http://www.elasticsearch.org/) that works like the built-in histogram facet, but supports floating point ranges and offsets.
+This plugin provides a facet for [elasticsearch](http://www.elasticsearch.org/) that works like the built-in histogram facet, but supports floating point intervals as well as offsets.
 
 To install the plugin, run:
 
@@ -86,10 +86,10 @@ Result:
         "demo" : {
             "entries" : [ {
               "key" : 20.0
-                "count" : 1
+              "count" : 1
             }, {
-                "key" : 20.5
-                "count" : 3
+              "key" : 20.5
+              "count" : 3
         } ]
     }
 }
