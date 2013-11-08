@@ -7,11 +7,10 @@ import java.util.List;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.common.bytes.HashedBytesArray;
+import org.elasticsearch.common.hppc.LongLongOpenHashMap;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.recycler.Recycler;
-import org.elasticsearch.common.trove.iterator.TLongLongIterator;
-import org.elasticsearch.common.trove.map.hash.TLongLongHashMap;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilderString;
 import org.elasticsearch.search.facet.Facet;
@@ -132,18 +131,22 @@ public class InternalDecimalHistogramFacet extends InternalFacet implements Deci
 			return facet;
 		}
 
-		Recycler.V<TLongLongHashMap> counts = context.cacheRecycler().longLongMap(-1);
+		Recycler.V<LongLongOpenHashMap> counts = context.cacheRecycler().longLongMap(-1);
 		for (Facet facet : facets) {
 			InternalDecimalHistogramFacet histoFacet = (InternalDecimalHistogramFacet) facet;
 			for (DecimalEntry entry : histoFacet.entries) {
-				counts.v().adjustOrPutValue(entry.getKey(), entry.getCount(), entry.getCount());
+				counts.v().addTo(entry.getKey(), entry.getCount());
 			}
 		}
+		final boolean[] states = counts.v().allocated;
+		final long[] keys = counts.v().keys;
+		final long[] values = counts.v().values;
 		DecimalEntry[] entries = new DecimalEntry[counts.v().size()];
-		int i = 0;
-		for (TLongLongIterator it = counts.v().iterator(); it.hasNext();) {
-			it.advance();
-			entries[i++] = new DecimalEntry(it.key(), it.value());
+		int entryIndex = 0;
+		for (int i = 0; i < states.length; ++i) {
+			if (states[i]) {
+				entries[entryIndex++] = new DecimalEntry(keys[i], values[i]);
+			}
 		}
 		counts.release();
 

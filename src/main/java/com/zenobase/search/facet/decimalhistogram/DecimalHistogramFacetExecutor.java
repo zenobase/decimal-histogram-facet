@@ -3,9 +3,8 @@ package com.zenobase.search.facet.decimalhistogram;
 import java.io.IOException;
 
 import org.apache.lucene.index.AtomicReaderContext;
+import org.elasticsearch.common.hppc.LongLongOpenHashMap;
 import org.elasticsearch.common.recycler.Recycler;
-import org.elasticsearch.common.trove.iterator.TLongLongIterator;
-import org.elasticsearch.common.trove.map.hash.TLongLongHashMap;
 import org.elasticsearch.index.fielddata.AtomicNumericFieldData;
 import org.elasticsearch.index.fielddata.DoubleValues;
 import org.elasticsearch.index.fielddata.IndexNumericFieldData;
@@ -22,7 +21,7 @@ public class DecimalHistogramFacetExecutor extends FacetExecutor {
 	private final double interval;
 	private final double offset;
 
-	final Recycler.V<TLongLongHashMap> counts;
+	final Recycler.V<LongLongOpenHashMap> counts;
 
 	public DecimalHistogramFacetExecutor(IndexNumericFieldData<AtomicNumericFieldData> indexFieldData, double interval, double offset, ComparatorType comparatorType, SearchContext context) {
 		this.indexFieldData = indexFieldData;
@@ -40,10 +39,14 @@ public class DecimalHistogramFacetExecutor extends FacetExecutor {
 	@Override
 	public InternalFacet buildFacet(String facetName) {
 		InternalDecimalHistogramFacet.DecimalEntry[] entries = new InternalDecimalHistogramFacet.DecimalEntry[counts.v().size()];
-		int i = 0;
-		for (TLongLongIterator it = counts.v().iterator(); it.hasNext();) {
-			it.advance();
-			entries[i++] = new InternalDecimalHistogramFacet.DecimalEntry(it.key(), it.value());
+		final boolean[] states = counts.v().allocated;
+		final long[] keys = counts.v().keys;
+		final long[] values = counts.v().values;
+		int entryIndex = 0;
+		for (int i = 0; i < states.length; ++i) {
+			if (states[i]) {
+				entries[entryIndex++] = new InternalDecimalHistogramFacet.DecimalEntry(keys[i], values[i]);
+			}
 		}
 		counts.release();
 		return new InternalDecimalHistogramFacet(facetName, interval, offset, comparatorType, entries);
@@ -78,9 +81,9 @@ public class DecimalHistogramFacetExecutor extends FacetExecutor {
 
 		private final double interval;
 		private final double offset;
-		private final TLongLongHashMap counts;
+		private final LongLongOpenHashMap counts;
 
-		public HistogramProc(double interval, double offset, TLongLongHashMap counts) {
+		public HistogramProc(double interval, double offset, LongLongOpenHashMap counts) {
 			this.interval = interval;
 			this.offset = offset;
 			this.counts = counts;
@@ -89,7 +92,7 @@ public class DecimalHistogramFacetExecutor extends FacetExecutor {
 		@Override
 		public void onValue(int docId, double value) {
 			long bucket = (long) Math.floor(((value + offset) / interval));
-			counts.adjustOrPutValue(bucket, 1, 1);
+			counts.addTo(bucket, 1);
 		}
 	}
 }
