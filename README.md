@@ -23,7 +23,7 @@ Versions
   <tbody>
     <tr>
       <td>0.0.2 -> master</td>
-      <td>0.90.6</td>
+      <td>0.90.6, 0.90.7</td>
     </tr>
     <tr>
       <td>0.0.1</td>
