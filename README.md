@@ -6,7 +6,7 @@ This plugin provides a facet for [elasticsearch](http://www.elasticsearch.org/) 
 To install the plugin, run:
 
 ```
-bin/plugin --url https://github.com/zenobase/decimal-histogram-facet/releases/download/0.0.2/decimal-histogram-facet-0.0.2.jar --install geocluster-facet
+bin/plugin --url https://github.com/zenobase/decimal-histogram-facet/releases/download/0.0.3/decimal-histogram-facet-0.0.3.jar --install decimal-histogram-facet
 ```
 
 
