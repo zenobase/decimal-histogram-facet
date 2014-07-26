@@ -6,7 +6,7 @@ This plugin provides a facet for [elasticsearch](http://www.elasticsearch.org/) 
 To install the plugin, run:
 
 ```
-bin/plugin --url https://github.com/zenobase/decimal-histogram-facet/releases/download/0.0.3/decimal-histogram-facet-0.0.3.jar --install decimal-histogram-facet
+bin/plugin --url https://github.com/zenobase/decimal-histogram-facet/releases/download/0.0.4/decimal-histogram-facet-0.0.4.jar --install decimal-histogram-facet
 ```
 
 
@@ -22,8 +22,12 @@ Versions
   </thead>
   <tbody>
     <tr>
+      <td>0.0.4 -> master</td>
+      <td>1.2.x</td>
+    </tr>
+    <tr>
       <td>0.0.3 -> master</td>
-      <td>1.0.0</td>
+      <td>1.0.x, 1.1.x</td>
     </tr>
     <tr>
       <td>0.0.2</td>
@@ -110,7 +114,7 @@ License
 ```
 This software is licensed under the Apache 2 license, quoted below.
 
-Copyright 2012-2013 Zenobase LLC
+Copyright 2012-2014 Zenobase LLC
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
