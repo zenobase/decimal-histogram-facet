@@ -48,7 +48,7 @@ public class DecimalHistogramFacetExecutor extends FacetExecutor {
 				entries[entryIndex++] = new InternalDecimalHistogramFacet.DecimalEntry(keys[i], values[i]);
 			}
 		}
-		counts.release();
+		counts.close();
 		return new InternalDecimalHistogramFacet(facetName, interval, offset, comparatorType, entries);
 	}
 

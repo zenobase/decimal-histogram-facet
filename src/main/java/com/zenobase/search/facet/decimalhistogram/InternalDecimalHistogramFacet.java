@@ -148,7 +148,7 @@ public class InternalDecimalHistogramFacet extends InternalFacet implements Deci
 				entries[entryIndex++] = new DecimalEntry(keys[i], values[i]);
 			}
 		}
-		counts.release();
+		counts.close();
 
 		Arrays.sort(entries, comparatorType.comparator());
 
