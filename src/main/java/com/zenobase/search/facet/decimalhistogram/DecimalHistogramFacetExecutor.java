@@ -5,9 +5,8 @@ import java.io.IOException;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.elasticsearch.common.hppc.LongLongOpenHashMap;
 import org.elasticsearch.common.recycler.Recycler;
-import org.elasticsearch.index.fielddata.AtomicNumericFieldData;
-import org.elasticsearch.index.fielddata.DoubleValues;
 import org.elasticsearch.index.fielddata.IndexNumericFieldData;
+import org.elasticsearch.index.fielddata.SortedNumericDoubleValues;
 import org.elasticsearch.search.facet.DoubleFacetAggregatorBase;
 import org.elasticsearch.search.facet.FacetExecutor;
 import org.elasticsearch.search.facet.InternalFacet;
@@ -16,14 +15,14 @@ import org.elasticsearch.search.internal.SearchContext;
 
 public class DecimalHistogramFacetExecutor extends FacetExecutor {
 
-	private final IndexNumericFieldData<AtomicNumericFieldData> indexFieldData;
+	private final IndexNumericFieldData indexFieldData;
 	private final ComparatorType comparatorType;
 	private final double interval;
 	private final double offset;
 
 	final Recycler.V<LongLongOpenHashMap> counts;
 
-	public DecimalHistogramFacetExecutor(IndexNumericFieldData<AtomicNumericFieldData> indexFieldData, double interval, double offset, ComparatorType comparatorType, SearchContext context) {
+	public DecimalHistogramFacetExecutor(IndexNumericFieldData indexFieldData, double interval, double offset, ComparatorType comparatorType, SearchContext context) {
 		this.indexFieldData = indexFieldData;
 		this.interval = interval;
 		this.offset = offset;
@@ -55,7 +54,7 @@ public class DecimalHistogramFacetExecutor extends FacetExecutor {
 	private class Collector extends FacetExecutor.Collector {
 
 		private final HistogramProc histoProc;
-		private DoubleValues values;
+		private SortedNumericDoubleValues values;
 
 		public Collector() {
 			this.histoProc = new HistogramProc(interval, offset, counts.v());

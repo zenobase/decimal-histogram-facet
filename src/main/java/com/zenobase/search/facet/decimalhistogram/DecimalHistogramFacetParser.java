@@ -77,7 +77,7 @@ public class DecimalHistogramFacetParser extends AbstractComponent implements Fa
         if (fieldMapper == null) {
             throw new FacetPhaseExecutionException(facetName, "failed to find mapping for [" + field + "]");
         }
-        IndexNumericFieldData<AtomicNumericFieldData> indexFieldData = context.fieldData().getForField(fieldMapper);
+        IndexNumericFieldData indexFieldData = context.fieldData().getForField(fieldMapper);
 		return new DecimalHistogramFacetExecutor(indexFieldData, interval, offset, comparatorType, context);
 	}
 }
