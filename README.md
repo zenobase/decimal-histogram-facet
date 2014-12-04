@@ -22,7 +22,10 @@ Versions
   </thead>
   <tbody>
     <tr>
-      <td>0.0.5 -> master</td>
+      <td>
+        0.0.5 -> master
+        [![Build Status](https://travis-ci.org/zenobase/decimal-histogram-facet.png?branch=master)](https://travis-ci.org/zenobase/decimal-histogram-facet) 
+      </td>
       <td>1.4.x</td>
     </tr>
     <tr>
